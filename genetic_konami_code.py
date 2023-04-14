@@ -62,14 +62,14 @@ def fit(population: t.List[Player]) -> t.Dict[str, int]:
 
 
 def select(
-    population: t.List[Player], scores_table: t.Dict[str, int], cutoff: int
+    population: t.List[Player], scores_table: t.Dict[str, int], fitness_cutoff: int
 ) -> t.List[Player]:
     """
-    Take the top <cutoff> players by their score.
+    Take the top <fitness_cutoff> players by their score.
     """
     player_ranks = sorted(scores_table, key=scores_table.get, reverse=True)
     survivor_indices = \
-        [int(x.replace("player_", "")) for x in player_ranks][:cutoff]
+        [int(x.replace("player_", "")) for x in player_ranks][:fitness_cutoff]
     survivors = [x for x in population if x[0] in survivor_indices]
     return survivors
 
@@ -95,12 +95,12 @@ def crossover(survivors: t.List[Player], size: int) -> t.List[Player]:
     return offspring
 
 
-def mutate(offspring: t.List[Player], m: float) -> t.List[Player]:
-    # Change m% of genes for each offspring randomly
+def mutate(offspring: t.List[Player], mutation_rate: float) -> t.List[Player]:
+    # Change mutation_rate% of genes for each offspring randomly
     mutated_offspring = copy.deepcopy(offspring)
     for player_idx in range(len(mutated_offspring)):
         for gene_idx in range(len(mutated_offspring[player_idx][1])):
-            if random.randint(0, 100) <= (100 * m):
+            if random.randint(0, 100) <= (100 * mutation_rate):
                 mutated_offspring[player_idx][1][gene_idx] = konami_code_genes[
                     random.randint(0, len(konami_code_genes) - 1)
                 ]
@@ -108,39 +108,43 @@ def mutate(offspring: t.List[Player], m: float) -> t.List[Player]:
 
 
 def play(
-    population: t.List[Player], cutoff: int = 10, m: float = 0.1
+    population: t.List[Player], fitness_cutoff: int = 10, mutation_rate: float = 0.1
 ) -> t.List[Player]:
     scores_table = fit(population)
-    survivors = select(population, scores_table, cutoff)
+    survivors = select(population, scores_table, fitness_cutoff)
     offspring = crossover(survivors, size)
-    mutated_offspring = mutate(offspring, m)
+    mutated_offspring = mutate(offspring, mutation_rate)
     return mutated_offspring
 
 
-def check_winners(population: t.List[Player]) -> bool:
+def check_winners(population: t.List[Player], win_percent: float = 0.99) -> bool:
+    winners = []
     for player in population:
         if player[1] == konami_code_genes:
-            return True
+            winners.append(player)
+    if len(winners) >= (len(population)*win_percent):
+        return True
     else:
         return False
 
 
 if __name__ == "__main__":
-    arg_names = ["command", "size", "cutoff", "m"]
+    arg_names = ["command", "size", "fitness_cutoff", "mutation_rate", "win_percent"]
     args = dict(zip(arg_names, sys.argv))
     size = int(args.get("size", None))
-    cutoff = int(args.get("cutoff", None))
-    m = float(args.get("m", None))
+    fitness_cutoff = int(args.get("fitness_cutoff", None))
+    mutation_rate = float(args.get("mutation_rate", None))
+    win_percent = float(args.get("win_percent", None))
     players = populate(size)
-    winners = check_winners(players)
-    generations = 0
+    winners = check_winners(players, win_percent)
+    generations = 1
     # TODO Clean up how it prints, maybe nest this all in the play function,
     # add better winner handling, etc.
     while not winners:
+        players = play(players, fitness_cutoff, mutation_rate)
+        winners = check_winners(players)
         print(f"generation: {generations}")
         pprint(players)
-        players = play(players, cutoff, m)
-        winners = check_winners(players)
         generations += 1
         if generations > 10000:
             print("Fail :(")

@@ -12,8 +12,25 @@ gamepad_input_genes = list(set(konami_code))
 
 class Player:
     """
-    Each Player has an id and dna. The dna are their 11 genes,
-    or gampad inputs.
+    Class instantiation of a Player.
+
+    Inputs:
+    player_id: ID number for player, mostly for visualization.
+    dna: 11-digit list of genes, or gamepad inputs, from gamepad_input_genes.
+    They are mutated given mutation_rate with the mutate method.
+    mutation_rate: Percent chance that a gene will randomly change to any
+    other possible value.
+
+    Attributes:
+    id: player_id.
+    dna: DNA sequence after being passed into the mutate method along with
+    mutation_rate.
+    lives: Number of lives to test_fitness. 1 means they have not had their
+    score evaluated yet, 0 means they've been evaluated.
+    score: Output of test_fitness method. Number of correct genes from left to
+    right before running out of lives, i.e. whether they pressed the correct
+    gamepad inputs.
+    winner: True if their dna is exactly the konami_code, else False.
     """
 
     def __init__(self, player_id: int, dna: t.List[str], mutation_rate: float) -> None:
@@ -32,9 +49,20 @@ class Player:
         """
 
     def mutate(self, dna: t.List[str], mutation_rate: float) -> t.List[str]:
-        # For each gene in the dna, there is a mutation_rate % chance that the
-        # gene will be replaced with any random gene from the
-        # konami_code_genes list.
+        """
+        Mutates Player dna. Each gene in the dna strand has a mutation_rate
+        percent chance of mutating into any other gene in the
+        gamepad_input_genes list.
+
+        Inputs:
+        dna: 11-digit list of genes, or gamepad inputs, from
+        gamepad_input_genes.
+        mutation_rate: Percent chance that a gene will randomly change to any
+        other possible value.
+
+        Returns:
+        dna: 11-digit list of genes after mutation.
+        """
         for gene_idx in range(len(dna)):
             if random.randint(0, 100) <= (100 * mutation_rate):
                 dna[gene_idx] = gamepad_input_genes[
@@ -44,14 +72,14 @@ class Player:
 
     def test_fitness(self) -> int:
         """
-        There is probably a more efficient way to do this, but this is easy to
-        conceptualize and works better for the videogame controller input
-        analogy of the task.
+        Tests Player fitness. From left to right, the player's genes are
+        compared to the konami_code. For each correct gene i.e. gamepad input,
+        their score goes up by one. If they get one incorrect, they lose a
+        life, and with only one life, they end the game.
 
-        Each player's dna is like the controller inputs they would press for
-        the Konami Code. Each correct input from left to right increases their
-        score by one. If they make an error, they lose a life, and they only
-        have one life, so that's their final score.
+        Returns:
+        score: Total number of correct genes from left to right before running
+        out of lives.
         """
         curr_gene = 0
         score = 0
@@ -66,12 +94,22 @@ class Player:
 
 def populate(size: int, mutation_rate: float) -> t.List[Player]:
     """
-    Creates a population of Players with randomized dna. Each player consists
-    of an id, and a dna strand of length(konami_code) of random gamepad inputs.
+    Creates a playerbase of Players with randomly generated dna.
+
+    Inputs:
+    size: Population size / playerbase.
+    mutation_rate: Percent chance that a gene will randomly mutate into
+    another gene from the gamepad_input_genes list.
+
+    Returns:
+    players: List of Players.
     """
     players = []
     for i in range(size):
-        dna = [random.randint(0, len(gamepad_input_genes) - 1) for _ in range(len(konami_code))]
+        dna = [
+            random.randint(0, len(gamepad_input_genes) - 1)
+            for _ in range(len(konami_code))
+        ]
         players.append(
             Player(
                 player_id=i,
@@ -84,7 +122,14 @@ def populate(size: int, mutation_rate: float) -> t.List[Player]:
 
 def select(players: t.List[Player], fitness_cutoff: int) -> t.List[Player]:
     """
-    Sorts the players by score and takes the top <fitness_cutoff> players.
+    Sorts the players by score and takes the top fitness_cutoff players.
+
+    Inputs:
+    players: List of Players.
+    fitness_cutoff: Top X scoring players to be selected.
+
+    Returns:
+    survivors: List of top-scoring Players up to the fitness_cutoff.
     """
     players.sort(key=lambda x: x.score, reverse=True)
     return players[:fitness_cutoff]
@@ -98,12 +143,14 @@ def crossover(
     previous generation. For simplicity, the player population size will
     remain the same for each generation.
 
-    The offspring can be sampled with replacement, so any two players can
-    cross any number of times with any other survivors. However, parent
-    sampling is without replacement, so there are no parthenogenically
-    reproducing players!
+    Inputs:
+    survivors: List of Players who met the fitness_cutoff.
+    size: Size for the next generation of players.
+    mutation_rate: Percent chance any gene mutates into any other gene in the
+    gamepad_input_genes list.
 
-    The crossover rule randomly selects a gene from each parent for that index.
+    Returns:
+    offspring: List of Players generated via crossover.
     """
     offspring = []
     player_id = 0
@@ -119,6 +166,14 @@ def crossover(
 def check_winners(players: t.List[Player], win_percent: float = 0.75) -> bool:
     """
     Checks if the percentage of winners meets the win_percent criteria.
+
+    Inputs:
+    players: List of players.
+    win_percent: Percent of players who must be winners in order to end the
+    game.
+
+    Returns:
+    winners: bool True or False whether the win condition has been met.
     """
     winners = 0
     for player in players:
@@ -138,19 +193,20 @@ def play(
     max_iter: int,
 ) -> int:
     """
-    After the initial player population is created, this runs the game.
-    Fitness and gene mutation is calculated on each player automatically when
-    instantiated, but then survivors are selected and a new generation of
-    offspring players created via crossover.
+    Runs the game.
+    Checks for winners, and if the win condition is not met, a new generation
+    will be created and tested again, and this will continue until the win
+    condition is met or the max_iter is exceeded.
 
-    The game will continue to run until win_percent of the players have the
-    Konami Code genes. If win_percent = 0.75, then 75% of the players must
-    have Konami Code genes.
-
-    max_iter is a failsafe, if the algorithm fails to converge within max_iter
-    generations, it will break.
-
-    If it runs successfully, it returns the number of generations to win.
+    Inputs:
+    players: List of players for Generation 0.
+    fitness_cutoff: Top X scoring players to be selected.
+    mutation_rate: Percent chance that a gene will randomly change to any
+    other possible value.
+    win_percent: Percent of players who must be winners in order to end the
+    game.
+    max_iter: Maximum number of generations before quitting, even the win
+    condition is not met.
     """
     generation = 0
     winners = False

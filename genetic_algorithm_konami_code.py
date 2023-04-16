@@ -4,8 +4,10 @@ import random
 from pprint import pprint
 
 
-# The "gamepad" inputs, or "genes".
-konami_code_genes = ["↑", "↑", "↓", "↓", "←", "→", "←", "→", "B", "A", "START"]
+# The Konami Code 11-digit inputs.
+konami_code = ["↑", "↑", "↓", "↓", "←", "→", "←", "→", "B", "A", "START"]
+# The list of unique values, the 7 possible genes (gamepad inputs).
+gamepad_input_genes = list(set(konami_code))
 
 
 class Player:
@@ -19,7 +21,7 @@ class Player:
         self.dna = self.mutate(dna, mutation_rate)
         self.lives = 1
         self.score = self.test_fitness()
-        self.winner = True if self.dna == konami_code_genes else False
+        self.winner = True if self.dna == konami_code else False
 
     def __repr__(self) -> str:
         return f"""
@@ -35,8 +37,8 @@ class Player:
         # konami_code_genes list.
         for gene_idx in range(len(dna)):
             if random.randint(0, 100) <= (100 * mutation_rate):
-                dna[gene_idx] = konami_code_genes[
-                    random.randint(0, len(konami_code_genes) - 1)
+                dna[gene_idx] = gamepad_input_genes[
+                    random.randint(0, len(gamepad_input_genes) - 1)
                 ]
         return dna
 
@@ -53,8 +55,8 @@ class Player:
         """
         curr_gene = 0
         score = 0
-        while self.lives > 0 and curr_gene < len(konami_code_genes):
-            if self.dna[curr_gene] == konami_code_genes[curr_gene]:
+        while self.lives > 0 and curr_gene < len(self.dna):
+            if self.dna[curr_gene] == konami_code[curr_gene]:
                 score += 1
                 curr_gene += 1
             else:
@@ -62,19 +64,18 @@ class Player:
         return score
 
 
-def populate(size: int = 100, mutation_rate: float = 0.05) -> t.List[Player]:
+def populate(size: int, mutation_rate: float) -> t.List[Player]:
     """
     Creates a population of Players with randomized dna. Each player consists
     of an id, and a dna strand of length(konami_code) of random gamepad inputs.
     """
     players = []
-    dna_length = len(konami_code_genes)
     for i in range(size):
-        dna = [random.randint(0, dna_length - 1) for _ in range(dna_length)]
+        dna = [random.randint(0, len(gamepad_input_genes) - 1) for _ in range(len(konami_code))]
         players.append(
             Player(
                 player_id=i,
-                dna=[konami_code_genes[x] for x in dna],
+                dna=[gamepad_input_genes[x] for x in dna],
                 mutation_rate=mutation_rate,
             )
         )
@@ -108,7 +109,7 @@ def crossover(
     player_id = 0
     while len(offspring) < size:
         parents = random.sample(survivors, 2)
-        dna = [parents[random.randint(0, 1)].dna[x] for x in range(len(konami_code_genes))]
+        dna = [parents[random.randint(0, 1)].dna[x] for x in range(len(konami_code))]
         new_player = Player(player_id=player_id, dna=dna, mutation_rate=mutation_rate)
         offspring.append(new_player)
         player_id += 1
@@ -131,10 +132,10 @@ def check_winners(players: t.List[Player], win_percent: float = 0.75) -> bool:
 
 def play(
     players: t.List[Player],
-    fitness_cutoff: int = 10,
-    mutation_rate: float = 0.05,
-    win_percent: float = 0.75,
-    max_iter: int = 10000,
+    fitness_cutoff: int,
+    mutation_rate: float,
+    win_percent: float,
+    max_iter: int,
 ) -> int:
     """
     After the initial player population is created, this runs the game.
@@ -178,10 +179,10 @@ if __name__ == "__main__":
         "max_iter",
     ]
     args = dict(zip(arg_names, sys.argv))
-    size = int(args.get("size", None))
-    fitness_cutoff = int(args.get("fitness_cutoff", None))
-    mutation_rate = float(args.get("mutation_rate", None))
-    win_percent = float(args.get("win_percent", None))
-    max_iter = int(args.get("max_iter", None))
-    players = populate(size)
+    size = int(args.get("size", 25))
+    fitness_cutoff = int(args.get("fitness_cutoff", 5))
+    mutation_rate = float(args.get("mutation_rate", 0.05))
+    win_percent = float(args.get("win_percent", 0.75))
+    max_iter = int(args.get("max_iter", 1000))
+    players = populate(size, mutation_rate)
     play(players, fitness_cutoff, mutation_rate, win_percent, max_iter)

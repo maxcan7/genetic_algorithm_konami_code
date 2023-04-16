@@ -259,3 +259,10 @@ Generation: 47
 Generation 47 wins!
 ```  
   
+### **TODOs**
+- [ ] Unit Tests
+- [ ] Makefile or CLI
+- [ ] More efficient (even if less explanatory) fitness functions
+- [ ] Better visualization tooling
+- [ ] Check for additional code cleanup or optimizations
+- [ ] Continue to improve documentation

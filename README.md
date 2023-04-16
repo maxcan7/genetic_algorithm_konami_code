@@ -9,7 +9,7 @@ The Konami Code is a common videogame cheat code:
   
 ## **Inspiration**  
 
-I had wanted to learn how to write Genetic Algorithms for a long time, and I'd casually read some articles or play around with some code but it never quite clicked. I stumbled upon [this video](https://youtu.be/-kpcAa-qKwY) and it finally clicked for me when I started thinking about the genes and videogame controller inputs, and the idea of training a Genetic Algorithm to learn the Konami Code struck me.
+I had wanted to learn how to write Genetic Algorithms for a long time, and I'd casually read some articles or played around with some code but it never quite clicked. I stumbled upon [this video](https://youtu.be/-kpcAa-qKwY) and it finally clicked for me when I started thinking about the genes as videogame controller inputs, and the idea of training a Genetic Algorithm to learn the Konami Code struck me.
   
   
 ## **Basic Description**  
@@ -187,7 +187,7 @@ Generation: 20
         ]
 ```
   
-Skipping to generation 20, while there is still high variability in just these first five players, we can see that the scores are getting much higher. In the full 25 players of this generation it's even more apparent.  
+Skipping to generation 20, while there is still high variability in just these first five players, we can see that the scores are getting much higher. In the full 25 players of this generation it's even more apparent, but remember that mutation, or just random chance of selecting a bad gene during crossover, also reasonably explains this variability.   
   
 ```
 Generation: 46

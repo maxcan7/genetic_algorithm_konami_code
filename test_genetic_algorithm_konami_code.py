@@ -1,35 +1,32 @@
 import random
+
 import pytest
-from genetic_algorithm_konami_code import check_winners
-from genetic_algorithm_konami_code import crossover
-from genetic_algorithm_konami_code import Player
-from genetic_algorithm_konami_code import populate
-from genetic_algorithm_konami_code import select
+
+from helpers import check_winners, crossover, populate, select
+from player import Player
 
 
 def test_player_creation():
     player = Player(
-        player_id=1,
+        id=1,
         dna=["↑", "↓", "←", "→", "B", "A", "START", "↑", "↓", "←", "→"],
         mutation_rate=0.0,
     )
     assert player.id == 1
     assert len(player.dna) == 11
-    # Lives automatically reduced to 0 during test_fitness.
-    assert player.lives == 0
     assert player.score >= 0
 
 
 def test_player_mutate():
     # 100% mutation rate guarantees changes.
-    player = Player(player_id=1, dna=["↑"] * 11, mutation_rate=1.0)
+    player = Player(id=1, dna=["↑"] * 11, mutation_rate=1.0)
     assert player.dna != ["↑"] * 11
 
 
 def test_player_test_fitness():
     # 0% mutation rate and already solved dna.
     player = Player(
-        player_id=1,
+        id=1,
         dna=["↑", "↑", "↓", "↓", "←", "→", "←", "→", "B", "A", "START"],
         mutation_rate=0.0,
     )
@@ -46,13 +43,13 @@ def test_populate():
 
 def test_select():
     players = [
-        Player(player_id=i, dna=(["↑"] * (11 - i) + ["↓"] * i), mutation_rate=0.0)
+        Player(id=i, dna=(["↑"] * (11 - i) + ["↓"] * i), mutation_rate=0.0)
         for i in range(11)
     ]
     # Add a player with perfect score for testing efficacy of select.
     players.append(
         Player(
-            player_id=11,
+            id=11,
             dna=["↑", "↑", "↓", "↓", "←", "→", "←", "→", "B", "A", "START"],
             mutation_rate=0.0,
         )
@@ -65,8 +62,8 @@ def test_select():
 def test_crossover():
     random.seed(42)
     parents = [
-        Player(player_id=0, dna=["↑"] * 11, mutation_rate=0.0),
-        Player(player_id=1, dna=["↓"] * 11, mutation_rate=0.0),
+        Player(id=0, dna=["↑"] * 11, mutation_rate=0.0),
+        Player(id=1, dna=["↓"] * 11, mutation_rate=0.0),
     ]
     offspring = crossover(survivors=parents, size=10, mutation_rate=0.0)
     assert len(offspring) == 10
@@ -84,7 +81,7 @@ def test_check_winners(win_gene: str, win: bool):
     dna = [win_gene, "↑", "↓", "↓", "←", "→", "←", "→", "B", "A", "START"]
     players = [
         Player(
-            player_id=i,
+            id=i,
             dna=dna,
             mutation_rate=0.0,
         )

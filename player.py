@@ -15,7 +15,6 @@ class Player:
 
     def __post_init__(self):
         self.mutate()
-        self.lives = 1
         self.score = self.test_fitness()
         self.winner = True if self.dna == KONAMI_CODE else False
 

@@ -22,15 +22,16 @@ class Player:
     def mutate(self) -> None:
         for i in range(len(self.dna)):
             mutate_chance = random.random()
-            if mutate_chance <= self.mutation_rate:
+            if mutate_chance < self.mutation_rate:
                 self.dna[i] = random.choice(GENES)
 
     def test_fitness(self) -> int:
         """Checks how many equal genes in common with konami code"""
         score = 0
         for idx, gene in enumerate(self.dna):
-            if gene == KONAMI_CODE[idx]:
-                score += 1
+            if gene != KONAMI_CODE[idx]:
+                break
+            score += 1
 
         return score
 

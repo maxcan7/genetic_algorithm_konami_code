@@ -260,7 +260,6 @@ Generation 47 wins!
 ```  
   
 ### **TODOs**
-- [ ] Unit Tests
 - [ ] Makefile or CLI
 - [ ] More efficient (even if less explanatory) fitness functions
 - [ ] Better visualization tooling

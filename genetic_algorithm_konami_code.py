@@ -64,7 +64,7 @@ class Player:
         dna: 11-digit list of genes after mutation.
         """
         for gene_idx in range(len(dna)):
-            if random.randint(0, 100) <= (100 * mutation_rate):
+            if random.randint(0, 100) < (100 * mutation_rate):
                 dna[gene_idx] = gamepad_input_genes[
                     random.randint(0, len(gamepad_input_genes) - 1)
                 ]

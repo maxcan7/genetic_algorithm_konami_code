@@ -56,8 +56,11 @@ def test_custom_arguments():
     assertValues(args, 50, 10, 0.1, 0.8, 500)
 
 
-def test_wrong_argument_type():
+def test_wrong_argument_type(capsys):
     sys.argv = [".py", "--size", "abc"]
 
-    with pytest.raises(SystemExit):  # Only raises SystemExit for some reason
+    with pytest.raises(SystemExit):
         parser.parse_args()
+    captured = capsys.readouterr()
+    assert "invalid int value: 'abc'" in captured.err
+    assert "error:" in captured.err

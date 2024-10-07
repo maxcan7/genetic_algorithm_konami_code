@@ -260,8 +260,9 @@ Generation 47 wins!
 ```  
   
 ### **TODOs**
-- [ ] Makefile or CLI
-- [ ] More efficient (even if less explanatory) fitness functions
-- [ ] Better visualization tooling
-- [ ] Check for additional code cleanup or optimizations
-- [ ] Continue to improve documentation
+- Update README after refactor
+- Refactor directories (e.g. move files to `src`, move tests to `tests`)
+- More efficient (even if less explanatory) fitness functions
+- Better visualization tooling
+- Check for additional code cleanup or optimizations
+- Continue to improve documentation

@@ -2,7 +2,13 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-s", "--size", type=int, help="Sets players amount", default=25)
+parser.add_argument(
+    "-s",
+    "--size",
+    type=int,
+    help="Sets players amount",
+    default=25,
+)
 
 parser.add_argument(
     "-f",
@@ -21,9 +27,17 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-wp", "--win-percent", type=float, default=0.75, help="Sets the win_percent"
+    "-wp",
+    "--win-percent",
+    type=float,
+    default=0.75,
+    help="Sets the win_percent",
 )
 
 parser.add_argument(
-    "-mi", "--max-iter", type=int, default=1000, help="Sets the max_iter for the game"
+    "-mi",
+    "--max-iter",
+    type=int,
+    default=1000,
+    help="Sets the max_iter for the game",
 )

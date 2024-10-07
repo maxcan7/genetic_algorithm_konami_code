@@ -1,7 +1,11 @@
-from parser import parser
 from pprint import pprint
 
-from helpers import Players, check_winners, crossover, populate, select
+from helpers import check_winners
+from helpers import crossover
+from helpers import Players
+from helpers import populate
+from helpers import select
+from parser import parser
 
 
 def play(

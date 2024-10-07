@@ -1,7 +1,9 @@
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 
-from constants import GENES, KONAMI_CODE
+from constants import GENES
+from constants import KONAMI_CODE
 
 
 @dataclass(repr=False)

@@ -2,7 +2,10 @@ import random
 
 import pytest
 
-from helpers import check_winners, crossover, populate, select
+from helpers import check_winners
+from helpers import crossover
+from helpers import populate
+from helpers import select
 from player import Player
 
 

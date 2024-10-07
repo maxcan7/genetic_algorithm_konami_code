@@ -1,8 +1,9 @@
 import argparse
 import sys
-from parser import parser
 
 import pytest
+
+from parser import parser
 
 
 def assertValues(
@@ -36,7 +37,19 @@ def test_default_arguments():
 
 
 def test_custom_arguments():
-    sys.argv = ["a.py", "-s", "50", "-f", "10", "-mr", ".1", "-wp", "0.8", "-mi", "500"]
+    sys.argv = [
+        "a.py",
+        "-s",
+        "50",
+        "-f",
+        "10",
+        "-mr",
+        ".1",
+        "-wp",
+        "0.8",
+        "-mi",
+        "500",
+    ]
 
     args = parser.parse_args()
 

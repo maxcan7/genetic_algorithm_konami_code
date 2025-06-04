@@ -14,25 +14,52 @@ I had wanted to learn how to write Genetic Algorithms for a long time, and I'd c
   
 ## **Basic Description**  
 
-This is a simple script to train a Genetic Algorithm to solve the Konami Code. This was written and conceived from scratch, for learning and demonstrative purposes.
+This is a Python project that implements a Genetic Algorithm to solve the Konami Code. The code is organized into multiple modules for better maintainability and includes comprehensive test coverage.
   
   
 ### **Dependencies**  
 
-This uses only standard libraries!
-  
-  
+You can install all dependencies using:
+```bash
+pip install -r requirements.txt
+```
+
+### **Project Structure**
+
+- `main.py` - The main entry point of the program
+- `player.py` - Contains the Player class implementation
+- `helpers.py` - Helper functions for the genetic algorithm
+- `parser.py` - Command line argument parsing
+- `constants.py` - Project constants
+- `test_*.py` files - Unit tests for each module
+
 ### **How to use**  
 
-The script can be run as-is, or with the following parameters:  
+The script can be run using:
+```bash
+python main.py
+```
+
+Or with the following parameters:  
   
 **size:** The population size (i.e. playerbase) of "Players" learning the Konami Code. Default 25.  
 **fitness_cutoff:** The number of Players selected for crossover in order of highest score. Default 5.  
 **mutation_rate:** The percent chance of a given gene (i.e. gamepad input) mutating into any other random gene/input. Default 0.05 (5%).  
 **win_percent:** The percentage of Players for a given generation that need to learn the Konami Code before the it is considered a success. Default 0.75 (75%).  
 **max_iter:** A failsafe to break if the game exceeds a certain number of generations. Default 1000.  
-  
-  
+
+### **Testing**
+
+The project includes comprehensive test coverage. To run the tests:
+```bash
+pytest
+```
+
+To run tests with coverage report:
+```bash
+pytest --cov=.
+```
+
 ### **Detailed Description**  
   
   

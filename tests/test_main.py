@@ -1,21 +1,22 @@
 import pytest
+import pprint
 
-from constants import KONAMI_CODE
-from main import play
-from player import Player
+from ..constants import KONAMI_CODE
+from ..main import play
+from ..player import Player
 
 
 @pytest.mark.parametrize(
     "winner_count,total_players,win_percent,expected_print_count",
     [
         pytest.param(
-            8, 10, 0.75, 3, id="80_percent_winners_meets_75_percent_threshold"
+            8, 10, 0.75, 3, id="80_percent_winners_meets_75_percent_threshold"  # 2 prints + 1 pprint
         ),
         pytest.param(
-            7, 10, 0.75, 3, id="70_percent_winners_below_75_percent_threshold"
+            7, 10, 0.75, 3, id="70_percent_winners_below_75_percent_threshold"  # 2 prints + 1 pprint
         ),
         pytest.param(
-            10, 10, 0.75, 3, id="100_percent_winners_meets_75_percent_threshold"
+            10, 10, 0.75, 3, id="100_percent_winners_meets_75_percent_threshold"  # 2 prints + 1 pprint
         ),
     ],
 )
@@ -47,10 +48,9 @@ def test_play_win_condition(
         ]
     )
 
-    print_calls = []
-    pprint_calls = []
-    monkeypatch.setattr("builtins.print", lambda *args: print_calls.append(args))
-    monkeypatch.setattr("main.pprint", lambda *args: pprint_calls.append(args))
+    output_calls = []
+    monkeypatch.setattr("builtins.print", lambda *args: output_calls.append(("print", args)))
+    monkeypatch.setattr("pprint.pprint", lambda obj: output_calls.append(("pprint", [obj])))
 
     play(
         players=players,
@@ -60,15 +60,15 @@ def test_play_win_condition(
         max_iter=0,
         size=total_players,
     )
-    assert len(print_calls) + len(pprint_calls) == expected_print_count
+    assert len(output_calls) == expected_print_count
 
 
 @pytest.mark.parametrize(
     "max_iter,expected_print_count",
     [
-        pytest.param(2, 7, id="max_iter_reached"),
-        pytest.param(1, 5, id="single_iteration"),
-        pytest.param(0, 3, id="zero_iterations"),
+        pytest.param(2, 7, id="max_iter_reached"),  # 4 prints + 3 pprints
+        pytest.param(1, 5, id="single_iteration"),  # 3 prints + 2 pprints
+        pytest.param(0, 3, id="zero_iterations"),   # 2 prints + 1 pprint
     ],
 )
 def test_play_max_iter(max_iter: int, expected_print_count: int, monkeypatch):
@@ -82,10 +82,9 @@ def test_play_max_iter(max_iter: int, expected_print_count: int, monkeypatch):
         for i in range(10)
     ]
 
-    print_calls = []
-    pprint_calls = []
-    monkeypatch.setattr("builtins.print", lambda *args: print_calls.append(args))
-    monkeypatch.setattr("main.pprint", lambda *args: pprint_calls.append(args))
+    output_calls = []
+    monkeypatch.setattr("builtins.print", lambda *args: output_calls.append(("print", args)))
+    monkeypatch.setattr("pprint.pprint", lambda obj: output_calls.append(("pprint", [obj])))
 
     play(
         players=players,
@@ -95,7 +94,7 @@ def test_play_max_iter(max_iter: int, expected_print_count: int, monkeypatch):
         max_iter=max_iter,
         size=10,
     )
-    assert len(print_calls) + len(pprint_calls) == expected_print_count
+    assert len(output_calls) == expected_print_count
 
 
 @pytest.mark.parametrize(

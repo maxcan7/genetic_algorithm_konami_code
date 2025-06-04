@@ -1,11 +1,11 @@
-from pprint import pprint
+import pprint
 
-from helpers import check_winners
-from helpers import crossover
-from helpers import Players
-from helpers import populate
-from helpers import select
-from parser import parser
+from .helpers import check_winners
+from .helpers import crossover
+from .helpers import Players
+from .helpers import populate
+from .helpers import select
+from .parser import parser
 
 
 def play(
@@ -47,7 +47,7 @@ def play(
     winners = False
     while not winners:
         print(f"Generation: {generation}")
-        pprint(players)
+        pprint.pprint(players)
         winners = check_winners(players, win_percent)
         if winners:
             print(f"Generation {generation} wins!")

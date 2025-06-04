@@ -2,12 +2,12 @@ import random
 
 import pytest
 
-from constants import KONAMI_CODE
-from helpers import check_winners
-from helpers import crossover
-from helpers import populate
-from helpers import select
-from player import Player
+from ..constants import KONAMI_CODE
+from ..helpers import check_winners
+from ..helpers import crossover
+from ..helpers import populate
+from ..helpers import select
+from ..player import Player
 
 
 @pytest.mark.parametrize(

@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from parser import parser
+from ..parser import parser
 
 
 def assertValues(

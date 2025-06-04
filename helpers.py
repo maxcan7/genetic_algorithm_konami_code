@@ -1,8 +1,8 @@
 import random
 
-from constants import GENES
-from constants import KONAMI_CODE
-from player import Player
+from .constants import GENES
+from .constants import KONAMI_CODE
+from .player import Player
 
 type Players = list[Player]
 

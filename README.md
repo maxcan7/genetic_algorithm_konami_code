@@ -31,33 +31,47 @@ pip install -r requirements.txt
 - `helpers.py` - Helper functions for the genetic algorithm
 - `parser.py` - Command line argument parsing
 - `constants.py` - Project constants
-- `test_*.py` files - Unit tests for each module
+- `tests/` - Unit tests for each module
+
+### **Important Note on Project Structure**
+
+This project uses relative imports within its modules. To ensure these imports work correctly:
+
+- Do not run `main.py` directly as a script
+- Always run the project using Python's module mode from the parent directory as shown in the "How to use" section
 
 ### **How to use**  
 
-The script can be run using:
+The script should be run as a module from the parent directory of the package to ensure relative imports work correctly:
 ```bash
-python main.py
+# From the directory containing the genetic_algorithm_konami_code folder
+python -m genetic_algorithm_konami_code.main
 ```
 
-Or with the following parameters:  
+You can also provide the following parameters:  
   
-**size:** The population size (i.e. playerbase) of "Players" learning the Konami Code. Default 25.  
-**fitness_cutoff:** The number of Players selected for crossover in order of highest score. Default 5.  
-**mutation_rate:** The percent chance of a given gene (i.e. gamepad input) mutating into any other random gene/input. Default 0.05 (5%).  
-**win_percent:** The percentage of Players for a given generation that need to learn the Konami Code before the it is considered a success. Default 0.75 (75%).  
-**max_iter:** A failsafe to break if the game exceeds a certain number of generations. Default 1000.  
+**--size:** The population size (i.e. playerbase) of "Players" learning the Konami Code. Default 25.  
+**--fitness_cutoff:** The number of Players selected for crossover in order of highest score. Default 5.  
+**--mutation_rate:** The percent chance of a given gene (i.e. gamepad input) mutating into any other random gene/input. Default 0.05 (5%).  
+**--win_percent:** The percentage of Players for a given generation that need to learn the Konami Code before the it is considered a success. Default 0.75 (75%).  
+**--max_iter:** A failsafe to break if the game exceeds a certain number of generations. Default 1000.  
+
+For example:
+```bash
+python -m genetic_algorithm_konami_code.main --size 50 --mutation_rate 0.1
+```
+This would run the simulation with a population of 50 and a 10% mutation rate, while using the default values for other parameters.
 
 ### **Testing**
 
 The project includes comprehensive test coverage. To run the tests:
 ```bash
-pytest
+pytest -vv
 ```
 
 To run tests with coverage report:
 ```bash
-pytest --cov=.
+pytest -vv --cov=.
 ```
 
 ### **Detailed Description**  
@@ -103,7 +117,10 @@ After the initial population is created, all of the parameters and Player popula
   
 ## **Example**  
 
-This was a real run with the following parameters: `./genetic_algorithm_konami_code.py 25 5 0.05 0.5 1000`
+This was a real run with the following parameters: 
+```bash
+python -m genetic_algorithm_konami_code.main --size 25 --fitness_cutoff 5 --mutation_rate 0.05 --win_percent 0.5 --max_iter 1000
+```
 
 But for simplicity I'll just show the Player_0 through Player_4 (remember these are new players each generation), and I'll also cut a lot of the generations, but keep enough so you can see the progression.  
   
@@ -287,8 +304,7 @@ Generation 47 wins!
 ```  
   
 ### **TODOs**
-- Update README after refactor
-- Refactor directories (e.g. move files to `src`, move tests to `tests`)
+- Refactor directories (e.g. move files to `src`)
 - More efficient (even if less explanatory) fitness functions
 - Better visualization tooling
 - Check for additional code cleanup or optimizations

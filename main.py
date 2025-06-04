@@ -31,7 +31,18 @@ def play(
     game.
     max_iter: Maximum number of generations before quitting, even the win
     condition is not met.
+
+    Raises:
+        ValueError: If fitness_cutoff is less than 1, mutation_rate is not between
+                   0 and 1, or win_percent is not between 0 and 1
     """
+    if fitness_cutoff < 1:
+        raise ValueError("Fitness cutoff must be at least 1")
+    if not 0 <= mutation_rate <= 1:
+        raise ValueError("Mutation rate must be between 0 and 1")
+    if not 0 <= win_percent <= 1:
+        raise ValueError("Win percentage must be between 0 and 1")
+
     generation = 0
     winners = False
     while not winners:
